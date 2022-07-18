@@ -1,0 +1,41 @@
+Name     X1SCSI;
+PartNo   0;
+Date     2001/12/31;
+Revision 0;
+Designer hoge ;
+Company  hoge;
+Assembly hoge;
+Location hoge;
+Device   g20v8ma;
+
+/* *************** INPUT PINS *********************/
+PIN 1   = !exio                   ; /* X1 Expansion I/O EXIO           */
+PIN [2..9] = [a4..11]             ; /* X1 Expansion I/O Address        */
+PIN 10  = !rd                     ; /* X1 Expansion I/O RD             */
+PIN 11  = !wr                     ; /* X1 Expansion I/O WR             */
+PIN 13  = !iorq                   ; /* X1 Expansion I/O IORQ           */
+PIN 14  = !busak                  ; /* X1 Expansion I/O BUSAK          */
+PIN 16  = spc_dreq                ; /* MB89352 DREQ                    */
+PIN 23  = reset                   ; /* X1 Expansion I/O RESET          */
+
+/* *************** OUTPUT PINS *********************/
+PIN 15  = !exrdy                  ; /* X1 Expansion I/O EXRDY          */
+PIN 17  = !iowr                   ; /* I/O Write                       */
+PIN 18  = !iord                   ; /* I/O Read                        */
+PIN 19  = !spc_dack               ; /* MB89352 DACK                    */
+PIN 20  = !spc_cs                 ; /* MB89352 Chip Select             */
+/* PIN 21  =                         ; */
+PIN 22  = !spc_reset              ; /* MB89352 RST                     */
+
+/* SPC MB89352 I/O address 0F70-0F7F */
+field ioaddr    = [a4..11];
+spc_addr        = ioaddr:'h'F7X;
+
+/* * Function ******************/
+spc_reset = reset;
+exrdy.oe  = spc_dreq;
+exrdy     = 'b'1;
+iord      = iorq & rd;
+iowr      = iorq & wr;
+spc_cs    = exio & spc_addr & !busak;
+spc_dack  = exio & spc_addr & busak;
